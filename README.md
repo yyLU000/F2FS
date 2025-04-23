@@ -72,17 +72,6 @@ qemu-system-aarch64 \
   -drive file=f2fs.img,format=raw,if=virtio
 
 
-//to locate(not work)
-qemu-system-aarch64 \
-  -machine virt -cpu cortex-a57 -nographic \
-  -m 1024 \
-  -kernel output/images/Image \
-  -append "root=/dev/vda console=ttyAMA0" \
-  -drive if=none,file=output/images/rootfs.ext2,format=raw,id=hd0 \
-  -device virtio-blk-device,drive=hd0 \
-  -drive if=none,file=f2fs.img,format=raw,id=hd1 \
-  -device virtio-blk-device,drive=hd1
-
 successful! :
 
 CUSTOM_TARBALL -> file:///usr/src/linux-5.4.290.tar.xz
@@ -155,150 +144,13 @@ Disk stats (read/write):
 
 ```
 
-```bash
-cat > !/bin/sh/ << "EOF"
-#!/bin/sh
 
-echo "=== F2FS GC 实验开始 ==="
-
-echo "[1] 创建大量小文件..."
-i=0
-while true; do
-    dd if=/dev/zero of=/test/file_$i bs=4K count=256 conv=fsync 2>/dev/null
-    i=$((i + 1))
-    used=$(df /test | awk 'NR==2 {print $5}' | sed 's/%//')
-    if [ "$used" -gt 95 ]; then
-        echo "磁盘使用率达到 $used%，停止写入"
-        break
-    fi
-done
-
-echo "[2] 删除部分文件..."
-for j in $(seq 0 $((i / 2))); do
-    rm -f /test/file_$j
-done
-sync
-
-echo "[3] 使用 fio 写入触发 GC..."
-fio --name=gc_test \
-    --directory=/test \
-    --size=100M \
-    --time_based --runtime=60s \
-    --rw=write \
-    --bs=4k \
-    --ioengine=sync \
-    --direct=1 \
-    --numjobs=1
-
-echo "[4] 当前 GC 状态："
-cat /sys/kernel/debug/f2fs/status 2>/dev/null | grep -i gc
-
-echo "=== F2FS GC 实验结束 ==="
-EOF
-```
 
 ```bash
-#!/bin/sh
-set -e
+/4/23
+sudo qemu-system-aarch64 -M virt -cpu cortex-a53 -m 4096   -nographic   -kernel output/images/Image   -append "root=/dev/vda rw console=ttyAMA0"   -drive if=none,file=output/images/rootfs.f2fs,format=raw,id=hd0   -device virtio-blk-pci,drive=hd0   -drive if=none,file=disk.f2fs,format=raw,id=hd1   -device virtio-blk-pci,drive=hd1
 
-echo "=== F2FS GC 实验开始 ==="
-
-# 挂载位置和设备
-DEV=/dev/vda
-MNT=/mnt/f2fs_test
-mkdir -p $MNT
-
-echo "[1] 格式化并挂载 F2FS（如果需要）..."
-mkfs.f2fs -f $DEV
-mount -t f2fs $DEV $MNT
-
-echo "[2] 初始写入小文件填满磁盘..."
-i=0
-while true; do
-  dd if=/dev/zero of=$MNT/file_$i bs=4K count=1 conv=fsync status=none || break
-  i=$((i + 1))
-done
-echo "共写入 $i 个文件。磁盘已满。"
-
-echo "[3] 删除一部分小文件制造无效块（给 GC 提供机会）..."
-j=0
-while [ $j -lt $i ]; do
-  rm -f $MNT/file_$j
-  j=$((j + 5))  # 每隔5个删1个
-done
-sync
-sleep 1
-
-USED_KB=$(df $MNT | awk 'NR==2{print $3}')
-AVAIL_KB=$(df $MNT | awk 'NR==2{print $4}')
-echo "剩余空间：$AVAIL_KB KB，可用：$(awk "BEGIN {printf \"%.2f\", $AVAIL_KB/($USED_KB+$AVAIL_KB)*100}")%"
-
-echo "[4] 使用 fio 顺序写入以诱发 GC..."
-fio --name=gc_test \
-    --directory=$MNT \
-    --size=80M \
-    --rw=write --bs=4k \
-    --ioengine=sync --direct=1 \
-    --runtime=30s --time_based \
-    --numjobs=1 --group_reporting
-
-echo "[5] 查看 F2FS 内核 GC 日志："
-dmesg | grep -i f2fs | tail -n 50
-
-echo "[6] 清理环境（可选）"
-umount $MNT
-
-echo "=== F2FS GC 实验结束 ==="
+rm -f disk.f2fs
 
 ```
 
-
-
-
-#!/bin/sh
-set -e
-
-echo "=== F2FS GC 实验开始 ==="
-
-# 挂载位置和设备
-DEV=/dev/vdb
-MNT=/mnt/f2fs_test
-mkdir -p $MNT
-
-echo "[1] 格式化并挂载 F2FS（如果需要）..."
-mount -t f2fs -o gc_debug,discard,no_heap,victim_sel_policy=0 /dev/vdb /mnt/f2fs_test
-
-echo "[2] 初始写入小文件填满磁盘..."
-i=0
-while true; do
-  dd if=/dev/zero of=$MNT/file_$i bs=4K count=1 conv=fsync status=none || break
-  i=$((i + 1))
-done
-echo "共写入 $i 个文件。磁盘已满。"
-
-echo "[3] 删除一部分小文件制造无效块（给 GC 提供机会）..."
-j=0
-while [ $j -lt $i ]; do
-  rm -f $MNT/file_$j
-  j=$((j + 5))  # 每隔5个删1个
-done
-sync
-sleep 1
-
-USED_KB=$(df $MNT | awk 'NR==2{print $3}')
-AVAIL_KB=$(df $MNT | awk 'NR==2{print $4}')
-echo "剩余空间：$AVAIL_KB KB，可用：$(awk "BEGIN {printf \"%.2f\", $AVAIL_KB/($USED_KB+$AVAIL_KB)*100}")%"
-
-echo "[4] 使用 fio 顺序写入以诱发 GC..."
-fio --name=gc_test --filename=/mnt/f2fs_test/gc_test \
-    --size=80m --bs=4k --rw=write --ioengine=sync \
-    --rate_iops=100 --direct=1 --numjobs=1
-
-
-echo "[5] 查看 F2FS 内核 GC 日志："
-dmesg | grep -i f2fs | tail -n 50
-
-echo "[6] 清理环境（可选）"
-umount $MNT
-
-echo "=== F2FS GC 实验结束 ==="
