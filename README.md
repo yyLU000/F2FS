@@ -148,9 +148,66 @@ Disk stats (read/write):
 
 ```bash
 /4/23
-sudo qemu-system-aarch64 -M virt -cpu cortex-a53 -m 4096   -nographic   -kernel output/images/Image   -append "root=/dev/vda rw console=ttyAMA0"   -drive if=none,file=output/images/rootfs.f2fs,format=raw,id=hd0   -device virtio-blk-pci,drive=hd0   -drive if=none,file=disk.f2fs,format=raw,id=hd1   -device virtio-blk-pci,drive=hd1
+sudo qemu-system-aarch64 -M virt -cpu cortex-a53 -m 4096   -nographic \
+     -kernel output/images/Image  \
+     -append "root=/dev/vda rw console=ttyAMA0" \
+     -drive if=none,file=output/images/rootfs.f2fs,format=raw,id=hd0  \
+     -device virtio-blk-pci,drive=hd0 \
+     -drive if=none,file=disk.f2fs,format=raw,id=hd1 \
+     -device virtio-blk-pci,drive=hd1
 
-rm -f disk.f2fs
+**** gc.sh ****
+#!/bin/sh
+
+set -e
+
+MOUNT_POINT="/mnt/f2fs-test"
+DEVICE="/dev/vdb"   # QEMU 中第二个 virtio-blk 设备是 vdb
+FILE="$MOUNT_POINT/test1"
+
+echo "[+] Unmounting previous mount (if any)..."
+umount $MOUNT_POINT 2>/dev/null || true
+
+echo "[+] Formatting $DEVICE as F2FS (5GB)..."
+mkfs.f2fs -f -s 16 $DEVICE
+
+echo "[+] Creating mount point and mounting..."
+mkdir -p $MOUNT_POINT
+mount -t f2fs -o mode=lfs $DEVICE $MOUNT_POINT
+df -h $MOUNT_POINT
+
+echo "[+] Syncing and dropping caches..."
+sync
+echo 3 > /proc/sys/vm/drop_caches
+
+echo "[+] Starting sequential write test..."
+fio --name=seq_write \
+    --filename=$FILE \
+    --size=3G \
+    --rw=write \
+    --bs=128K \
+    --ioengine=libaio \
+    --numjobs=1 \
+    --runtime=60 \
+    --direct=1 \
+    --group_reporting
+
+echo "[+] Starting random update test..."
+fio --name=rand_update \
+    --filename=$FILE \
+    --size=1G \
+    --rw=randwrite \
+    --bs=128K\
+    --ioengine=sync \
+    --numjobs=4 \
+    --runtime=300 \
+    --direct=0 \
+    --time_based \
+    --norandommap \
+    --random_generator=lfsr \
+    --group_reporting
+echo "[+] Done."
+
 
 ```
 
