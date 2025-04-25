@@ -337,7 +337,7 @@ Disk stats (read/write):
 [+] Done.
 
 ```
-## status 
+### status 
 ```bash
 =====[ partition info(vdb). #1, RW, CP: Good]=====
 [SB: 1] [CP: 2] [SIT: 2] [NAT: 12] [SSA: 16] [MAIN: 2512(OverProv:304 Resv:272)]
@@ -450,7 +450,7 @@ Disk stats (read/write):
   vdb: ios=3378/444460, sectors=417248/59262712, merge=48778/3, ticks=2741/185416, in_queue=246058, util=99.09%
 ```
 
-
+### status
 ```bash
 =====[ partition info(vdb). #1, RW, CP: Good]=====
 [SB: 1] [CP: 2] [SIT: 2] [NAT: 12] [SSA: 16] [MAIN: 2512(OverProv:304 Resv:272)]
