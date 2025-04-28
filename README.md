@@ -153,7 +153,7 @@ sudo qemu-system-aarch64 -M virt -cpu cortex-a53 -m 4096   -nographic \
      -append "root=/dev/vda rw console=ttyAMA0" \
      -drive if=none,file=output/images/rootfs.f2fs,format=raw,id=hd0  \
      -device virtio-blk-pci,drive=hd0 \
-     -drive if=none,file=disk.f2fs,format=raw,id=hd1 \
+     -drive if=none,file=f2fs.img,format=raw,id=hd1 \
      -device virtio-blk-pci,drive=hd1
 
 **** gc.sh ****
