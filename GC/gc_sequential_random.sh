@@ -57,9 +57,9 @@ echo "[+] Starting random read test..."
 fio --name=read_test \
     --filename=$FILE \
     --size=1G \
-    --rw=randread \
-    --bs=8K \
-    --ioengine=libaio \
+    --rw=read \
+    --bs=4K \
+    --ioengine=sync \
     --iodepth=32 \
     --numjobs=4 \
     --runtime=120 \
