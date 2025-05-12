@@ -3,8 +3,9 @@
 set -e
 
 MOUNT_POINT="/mnt/f2fs-test"
-DEVICE="/dev/vdb"   # QEMU 中第二个 virtio-blk 设备是 vdb
+DEVICE="/dev/vdb"  
 FILE="$MOUNT_POINT/test1"
+TRACE_LOG="/tmp/gc_log.txt"
 
 echo "[+] Unmounting previous mount (if any)..."
 umount $MOUNT_POINT 2>/dev/null || true
@@ -20,6 +21,12 @@ df -h $MOUNT_POINT
 echo "[+] Syncing and dropping caches..."
 sync
 echo 3 > /proc/sys/vm/drop_caches
+
+echo "[+] Starting trace_pipe to log GC events..."
+# 启动 trace_pipe 到后台，并保存 PID
+cat /sys/kernel/debug/tracing/trace_pipe > $TRACE_LOG &
+TRACE_PID=$!
+sleep 1
 
 echo "[+] Starting sequential write test..."
 fio --name=seq_write \
@@ -38,13 +45,31 @@ fio --name=rand_update \
     --filename=$FILE \
     --size=1G \
     --rw=randwrite \
-    --bs=16K\
+    --bs=4K\
     --ioengine=sync \
     --numjobs=4 \
     --runtime=300 \
     --direct=1 \
     --time_based \
     --group_reporting
+
+echo "[+] Starting random read test..."
+fio --name=read_test \
+    --filename=$FILE \
+    --size=1G \
+    --rw=randread \
+    --bs=8K \
+    --ioengine=libaio \
+    --iodepth=32 \
+    --numjobs=4 \
+    --runtime=120 \
+    --direct=1 \
+    --time_based \
+    --group_reporting
+
+
+echo "[+] Stopping trace_pipe logging..."
+kill $TRACE_PID
 
 echo "[+] Evaluating ... *** +++ !!!"
 cat /sys/fs/f2fs/vdb/dirty_segments | tee -a $LOG
