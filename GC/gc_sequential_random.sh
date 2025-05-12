@@ -1,4 +1,3 @@
-**** gc.sh ****
 #!/bin/bash/gc.sh
 
 set -e
