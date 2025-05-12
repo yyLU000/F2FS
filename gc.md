@@ -1,4 +1,9 @@
 ```bash
+echo 1 > /sys/kernel/debug/tracing/events/f2fs/f2fs_gc_begin/enable
+echo 1 > /sys/kernel/debug/tracing/events/f2fs/f2fs_gc_end/enable
+echo 1 > /sys/kernel/debug/tracing/tracing_on
+echo > /sys/kernel/debug/tracing/trace
+
 cat > gc.sh << "EOF"
 > ****
 > EOF
@@ -9,6 +14,8 @@ chmod +x gc.sh
 cat /sys/kernel/debug/f2fs/status
 cat /sys/fs/f2fs/vdb/dirty_segments
 cat /sys/fs/f2fs/vdb/free_segments
+cat /sys/kernel/debug/tracing/trace | grep f2fs_gc
+
 ```
 
 
