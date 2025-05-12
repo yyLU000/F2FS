@@ -1,4 +1,6 @@
 ```bash
+mount -t debugfs none /sys/kernel/debug
+
 echo 1 > /sys/kernel/debug/tracing/events/f2fs/f2fs_gc_begin/enable
 echo 1 > /sys/kernel/debug/tracing/events/f2fs/f2fs_gc_end/enable
 echo 1 > /sys/kernel/debug/tracing/tracing_on
