@@ -1,4 +1,24 @@
-# sync
+```bash
+cat > gc.sh << "EOF"
+> ****
+> EOF
+
+chmod +x gc.sh
+./gc.sh
+
+cat /sys/kernel/debug/f2fs/status
+cat /sys/fs/f2fs/vdb/dirty_segments
+cat /sys/fs/f2fs/vdb/free_segments
+```
+
+
+
+
+
+
+# Result
+
+## sync
 ```bash
 [+] Starting sequential write test...
 seq_write: (g=0): rw=write, bs=(R) 128KiB-128KiB, (W) 128KiB-128KiB, (T) 128KiB-128KiB, ioengine=libaio, iodepth=1
@@ -234,7 +254,7 @@ Memory: 14348 KB
   - paged : 13300 KB
 ```
 
-# libaio
+## libaio
 
 ```bash
 [+] Unmounting previous mount (if any)...
