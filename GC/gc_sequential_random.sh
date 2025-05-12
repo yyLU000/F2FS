@@ -48,8 +48,8 @@ fio --name=rand_update \
     --group_reporting
 
 echo "[+] Evaluating ... *** +++ !!!"
-cat /sys/fs/f2fs/${MOUNT_POINT##*/}/dirty_segments | tee -a $LOG
-cat /sys/fs/f2fs/${MOUNT_POINT##*/}/invalid_blocks | tee -a $LOG
-cat /sys/fs/f2fs/${MOUNT_POINT##*/}/free_segments | tee -a $LOG
+cat /sys/fs/f2fs/vdb/dirty_segments | tee -a $LOG
+cat /sys/fs/f2fs/vdb/invalid_blocks | tee -a $LOG
+cat /sys/fs/f2fs/vdb/free_segments | tee -a $LOG
 
 echo "[+] Done."
