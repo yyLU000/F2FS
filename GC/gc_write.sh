@@ -52,53 +52,11 @@ fio --name=rand_update \
     --time_based \
     --group_reporting
 
-echo "[+] Starting sequential read test..."
-fio --name=read_test \
-    --filename=$FILE \
-    --size=1G \
-    --rw=read \
-    --bs=4K \
-    --ioengine=sync \
-    --numjobs=1 \
-    --runtime=120 \
-    --direct=1 \
-    --time_based \
-    --group_reporting
-
-echo "[+] Starting random read test..."
-fio --name=read_test \
-    --filename=$FILE \
-    --size=1G \
-    --rw=randread \
-    --bs=4K \
-    --ioengine=sync \
-    --numjobs=4 \
-    --runtime=120 \
-    --direct=1 \
-    --time_based \
-    --group_reporting
-
-echo "[+] Starting mixed read & write test..."
-fio --name=mixed_read_write_test \
-    --filename=$FILE \
-    --size=1G \
-    -rw=randrw \
-    --rwmixread=70 \
-    --rwmixwrite=30 \
-    --bs=16K \
-    --numjobs=4\
-    --runtime=120 \
-    --direct=1 \
-    --time_based \
-    --group_reporting
-
-
 echo "[+] Stopping trace_pipe logging..."
 kill $TRACE_PID
 
 echo "[+] Evaluating ... *** +++ !!!"
 cat /sys/fs/f2fs/vdb/dirty_segments | tee -a $LOG
-cat /sys/fs/f2fs/vdb/invalid_blocks | tee -a $LOG
 cat /sys/fs/f2fs/vdb/free_segments | tee -a $LOG
 
 echo "[+] Done."
