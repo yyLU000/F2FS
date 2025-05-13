@@ -30,7 +30,7 @@ sleep 1
 echo "[+] Starting sequential write test..."
 fio --name=seq_write \
     --filename=$FILE \
-    --size=3G \
+    --size=4G \
     --rw=write \
     --bs=128K \
     --ioengine=sync \
