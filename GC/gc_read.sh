@@ -30,3 +30,5 @@ fio --name=read_test \
     --direct=1 \
     --time_based \
     --group_reporting
+
+echo "[+] DONE!"
