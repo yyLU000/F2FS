@@ -59,4 +59,6 @@ echo "[+] Evaluating ... *** +++ !!!"
 cat /sys/fs/f2fs/vdb/dirty_segments | tee -a $LOG
 cat /sys/fs/f2fs/vdb/free_segments | tee -a $LOG
 
+echo "[+] Status~..."
+cat /sys/kernel/debug/f2fs/status
 echo "[+] Done."
