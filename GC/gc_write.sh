@@ -35,6 +35,7 @@ fio --name=seq_write \
     --bs=128K \
     --ioengine=sync \
     --numjobs=1 \
+    --runtime=60 \
     --direct=1 \
     --group_reporting
 
@@ -46,10 +47,13 @@ fio --name=rand_update \
     --bs=4K\
     --ioengine=sync \
     --numjobs=4 \
-    --runtime=120 \
+    --runtime=300 \
     --direct=1 \
     --time_based \
     --group_reporting
+
+echo "[+] Checking status..."
+cat /sys/kernel/debug/f2fs/status
 
 echo "[+] Starting append write test..."
 fio --name=append_write \
@@ -60,6 +64,7 @@ fio --name=append_write \
     --bs=128K \
     --ioengine=sync \
     --numjobs=1 \
+    --runtime=60 \
     --direct=1 \
     --group_reporting
 
