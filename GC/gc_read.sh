@@ -1,11 +1,18 @@
+MOUNT_POINT="/mnt/f2fs-test"
+DEVICE="/dev/vdb"  
+FILE="$MOUNT_POINT/test1"
+
+df -h $MOUNT_POINT
+
 echo "[+] Starting sequential read test..."
 fio --name=read_test \
     --filename=$FILE \
     --size=1G \
     --rw=read \
-    --bs=4K \
-    --ioengine=sync \
+    --bs=1M \
+    --ioengine=libaio \
     --numjobs=1 \
+    --iodepth=32 \
     --runtime=120 \
     --direct=1 \
     --time_based \
