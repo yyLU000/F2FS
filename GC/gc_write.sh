@@ -30,7 +30,7 @@ sleep 1
 echo "[+] Starting sequential write test..."
 fio --name=seq_write \
     --filename=$FILE \
-    --size=3584M \
+    --size=4G \
     --rw=write \
     --bs=128K \
     --ioengine=sync \
@@ -42,30 +42,15 @@ fio --name=seq_write \
 echo "[+] Starting random update test..."
 fio --name=rand_update \
     --filename=$FILE \
-    --size=1500M \
+    --size=4G \
+    --io_size=1G \
     --rw=randwrite \
-    --bs=4K\
+    --bs=4K \
     --ioengine=sync \
     --numjobs=4 \
     --runtime=300 \
     --direct=1 \
     --time_based \
-    --group_reporting
-
-echo "[+] Checking status..."
-cat /sys/kernel/debug/f2fs/status
-
-echo "[+] Starting append write test..."
-fio --name=append_write \
-    --filename=$FILE \
-    --size=716M \
-    --offset=3584M \
-    --rw=write \
-    --bs=128K \
-    --ioengine=sync \
-    --numjobs=1 \
-    --runtime=60 \
-    --direct=1 \
     --group_reporting
 
 echo "[+] Stopping trace_pipe logging..."
