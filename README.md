@@ -206,6 +206,12 @@ fio --name=rand_update \
     --norandommap \
     --random_generator=lfsr \
     --group_reporting
+
+echo "[+] Evaluating ... *** +++ !!!"
+cat /sys/fs/f2fs/vdb/dirty_segments | tee -a $LOG
+cat /sys/fs/f2fs/vdb/free_segments | tee -a $LOG
+cat /sys/kernel/debug/f2fs/status
+
 echo "[+] Done."
 
 
