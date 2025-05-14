@@ -11,12 +11,12 @@ echo 3 > /proc/sys/vm/drop_caches
 echo "[+] Starting sequential read test..."
 fio --name=read_test \
     --filename=$FILE \
-    --size=1536M \
+    --size=4G \
     --rw=read \
-    --bs=512K \
+    --bs=128K \
     --ioengine=sync \
     --numjobs=1 \
-    --runtime=60 \
+    --runtime=120 \
     --direct=1 \
     --time_based \
     --group_reporting
@@ -28,7 +28,7 @@ echo 3 > /proc/sys/vm/drop_caches
 echo "[+] Starting random read test..."
 fio --name=read_test \
     --filename=$FILE \
-    --size=1G \
+    --size=4G \
     --rw=randread \
     --bs=4K \
     --ioengine=sync \
