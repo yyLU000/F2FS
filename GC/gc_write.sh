@@ -47,7 +47,7 @@ fio --name=rand_update \
     --bs=4K \
     --ioengine=sync \
     --numjobs=4 \
-    --runtime=120 \
+    --runtime=300 \
     --direct=1 \
     --time_based \
     --group_reporting
