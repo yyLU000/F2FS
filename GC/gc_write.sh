@@ -43,12 +43,11 @@ echo "[+] Starting random update test..."
 fio --name=rand_update \
     --filename=$FILE \
     --size=4G \
-    --io_size=1G \
     --rw=randwrite \
     --bs=4K \
     --ioengine=sync \
     --numjobs=4 \
-    --runtime=300 \
+    --runtime=120 \
     --direct=1 \
     --time_based \
     --group_reporting
