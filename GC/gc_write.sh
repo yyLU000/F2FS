@@ -44,10 +44,11 @@ fio --name=rand_update \
     --filename=$FILE \
     --size=4G \
     --rw=randwrite \
-    --bs=4K \
-    --ioengine=sync \
+    --bs=16K \
+    --ioengine=libaio \
+    --iodepth=8 \
     --numjobs=4 \
-    --runtime=300 \
+    --runtime=150 \
     --direct=1 \
     --time_based \
     --group_reporting
