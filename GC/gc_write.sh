@@ -47,8 +47,8 @@ fio --name=rand_update \
     --bs=16K \
     --ioengine=libaio \
     --iodepth=8 \
-    --numjobs=4 \
-    --runtime=150 \
+    --numjobs=2 \
+    --runtime=360 \
     --direct=1 \
     --time_based \
     --group_reporting
