@@ -21,6 +21,11 @@ echo "[+] Syncing and dropping caches..."
 sync
 echo 3 > /proc/sys/vm/drop_caches
 
+echo "[+] Adjust GC sleep time..."
+echo 30 > /sys/fs/f2fs/vdb/gc_min_sleep_time 
+echo 60 > /sys/fs/f2fs/vdb/gc_max_sleep_time 
+echo 10 > /sys/fs/f2fs/vdb/gc_idle_interval
+
 echo "[+] Starting trace_pipe to log GC events..."
 # 启动 trace_pipe 到后台，并保存 PID
 cat /sys/kernel/debug/tracing/trace_pipe > $TRACE_LOG &
@@ -30,7 +35,7 @@ sleep 1
 echo "[+] Starting sequential write test..."
 fio --name=seq_write \
     --filename=$FILE \
-    --size=4G \
+    --size=2G \
     --rw=write \
     --bs=128K \
     --ioengine=sync \
@@ -42,15 +47,12 @@ fio --name=seq_write \
 echo "[+] Starting random update test..."
 fio --name=rand_update \
     --filename=$FILE \
-    --size=4G \
+    --size=1G \
     --rw=randwrite \
-    --bs=16K \
-    --ioengine=libaio \
-    --iodepth=8 \
-    --numjobs=2 \
-    --runtime=360 \
+    --bs=8K \
+    --ioengine=sync \
+    --numjobs=1 \
     --direct=1 \
-    --time_based \
     --group_reporting
 
 echo "[+] Stopping trace_pipe logging..."
