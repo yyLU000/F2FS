@@ -16,9 +16,7 @@ fio --name=read_test \
     --bs=128K \
     --ioengine=sync \
     --numjobs=1 \
-    --runtime=120 \
     --direct=1 \
-    --time_based \
     --group_reporting
 
 echo "[+] Dropping caches again..."
