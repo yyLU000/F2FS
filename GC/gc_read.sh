@@ -28,14 +28,12 @@ echo 3 > /proc/sys/vm/drop_caches
 echo "[+] Starting random read test..."
 fio --name=read_test \
     --filename=$FILE \
-    --size=4G \
+    --size=1G \
     --rw=randread \
     --bs=4K \
     --ioengine=sync \
-    --numjobs=4 \
-    --runtime=120 \
+    --numjobs=2 \
     --direct=1 \
-    --time_based \
     --group_reporting
 
 echo "[+] DONE!"
