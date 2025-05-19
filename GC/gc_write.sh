@@ -22,9 +22,9 @@ sync
 echo 3 > /proc/sys/vm/drop_caches
 
 echo "[+] Adjust GC sleep time..."
-echo 30 > /sys/fs/f2fs/vdb/gc_min_sleep_time 
-echo 60 > /sys/fs/f2fs/vdb/gc_max_sleep_time 
-echo 10 > /sys/fs/f2fs/vdb/gc_idle_interval
+echo 100 > /sys/fs/f2fs/vdb/gc_min_sleep_time 
+echo 150 > /sys/fs/f2fs/vdb/gc_max_sleep_time 
+echo 50 > /sys/fs/f2fs/vdb/gc_idle_interval
 
 echo "[+] Starting trace_pipe to log GC events..."
 # 启动 trace_pipe 到后台，并保存 PID
