@@ -11,7 +11,7 @@ echo 3 > /proc/sys/vm/drop_caches
 echo "[+] Starting sequential read test..."
 fio --name=read_test \
     --filename=$FILE \
-    --size=4G \
+    --size=3G \
     --rw=read \
     --bs=128K \
     --ioengine=sync \
