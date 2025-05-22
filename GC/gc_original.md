@@ -2,32 +2,40 @@
 
 ### sequential write
 ```bash
-IOPS=1096, BW=137MiB/s (144MB/s)(3584MiB/26141msec);
-clat (usec): min=666, max=100814, avg=890.33, stdev=617.48
-clat percentiles (usec):
-90.00th=[ 1029], 95.00th=[ 1123], 99.00th=[ 1631], 99.50th=[ 2376], 99.90th=[ 4948], 99.95th=[ 5145], 99.99th=[ 8029]
-cpu          : usr=3.79%, sys=65.50%, ctx=71992, majf=0, minf=20
-bw (  KiB/s): min=97280, max=148480, per=100.00%, avg=140371.46, stdev=7927.91, samples=59
-iops        : min=  760, max= 1160, avg=1096.32, stdev=61.88, samples=59
+(ep1):
+IOPS=1078, BW=135MiB/s (141MB/s)(3072MiB/22786msec);
+    clat (usec): min=658, max=198935, avg=895.59, stdev=1285.26
+90.00th=[ 1029], 95.00th=[ 1123],
+     | 99.00th=[ 1680], 99.50th=[ 2311], 99.90th=[ 4113], 99.95th=[ 4490],
+     | 99.99th=[ 5342]
+bw (  KiB/s): min=74496, max=154880, per=100.00%, avg=138161.47, stdev=11758.72, samples=45
+iops        : min=  582, max= 1210, avg=1078.98, stdev=91.87, samples=45
+cpu          : usr=4.09%, sys=64.72%, ctx=52959, majf=0, minf=21
+
+(ep2):
+
 
 ```
 
 ### random update
 ```bash
-IOPS=164, BW=658KiB/s (674kB/s)(194MiB/301852msec);
-clat (usec): min=169, max=2007.2k, avg=24222.42, stdev=185020.88
-clat percentiles (usec):
-90.00th=[  15926], 95.00th=[  16319], 99.00th=[ 977273], 99.50th=[1837106], 99.90th=[1887437], 99.95th=[1920992], 99.99th=[1954546]
-cpu          : usr=0.14%, sys=23.54%, ctx=195322, majf=0, minf=75
-bw (  KiB/s): min=   28, max= 4801, per=100.00%, avg=1506.87, stdev=381.44, samples=1052
-iops        : min=    4, max= 1199, avg=375.96, stdev=95.25, samples=1052
+(ep1):
+IOPS=1924, BW=15.0MiB/s (15.8MB/s)(2048MiB/136212msec);
+clat (usec): min=130, max=29018k, avg=478.70, stdev=78069.36
+90.00th=[  289], 95.00th=[  343], 99.00th=[  482], 99.50th=[  578], 99.90th=[ 2147], 99.95th=[ 3097], 99.99th=[ 4817]
+bw (  KiB/s): min= 3203, max=30544, per=100.00%, avg=26806.67, stdev=3482.52, samples=156
+iops        : min=  400, max= 3818, avg=3350.76, stdev=435.36, samples=156
+cpu          : usr=8.55%, sys=24.15%, ctx=273471, majf=0, minf=23
+
+(ep2):
+
 ```
 
 ### GC
 ```bash
-Utilization: 92% (1049611 valid blocks, 7764 discard blocks)
-  - Node: 1034 (Inode: 2, Other: 1032)
-  - Data: 1048577
+Utilization: 61% (787208 valid blocks, 156 discard blocks)
+  - Node: 775 (Inode: 2, Other: 773)
+  - Data: 786433
   - Inline_xattr Inode: 1
   - Inline_data Inode: 0
   - Inline_dentry Inode: 0
@@ -35,46 +43,54 @@ Utilization: 92% (1049611 valid blocks, 7764 discard blocks)
   - Orphan/Append/Update Inode: 0, 0, 0
 
 
-Main area: 2512 segs, 157 secs 157 zones
+Main area: 2538 segs, 2538 secs 2538 zones
     TYPE            segno    secno   zoneno  dirty_seg   full_seg  valid_blk
-  - COLD   data:      623       38       38          1         15       7764
-  - WARM   data:      944       59       59       2123          6    1040812
-  - HOT    data:       48        3        3          1          0          1
+  - COLD   data:      159      159      159          0          0          0
+  - WARM   data:       21       21       21          0       1536     786432
+  - HOT    data:        3        3        3          1          0          1
   - Dir   dnode:        0        0        0          1          0          1
-  - File  dnode:      962       60       60          3          0       1031
-  - Indir nodes:       32        2        2          1          0          2
+  - File  dnode:       22       22       22          2          0        773
+  - Indir nodes:        2        2        2          1          0          1
   - Pinned file:       -1       -1       -1
   - ATGC   data:       -1       -1       -1
 
-  - Valid: 27
-  - Dirty: 2124
-  - Prefree: 16
-  - Free: 345 (17)
+  - Valid: 1542
+  - Dirty: 1
+  - Prefree: 0
+  - Free: 995 (995)
 
-GC calls: 8757 (BG: 1)
-  - data segments : 140096 (0)
-  - node segments : 11 (0)
-  - Reclaimed segs : Normal (140107), Idle CB (0), Idle Greedy (0), Idle AT (0), Urgent High (0), Urgent Low (0)
-Try to move 8795 blocks (BG: 0)
-  - data blocks : 7764 (0)
-  - node blocks : 1031 (0)
+GC calls: 252 (BG: 253)
+  - data segments : 248 (248)
+  - node segments : 4 (4)
+  - Reclaimed segs : Normal (252), Idle CB (0), Idle Greedy (0), Idle AT (0), Urgent High (0), Urgent Low (0)
+Try to move 1585 blocks (BG: 1585)
+  - data blocks : 910 (910)
+  - node blocks : 675 (675)
+
+
 ```
 
 ### sequential read
 ```bash
-IOPS=183, BW=23.0MiB/s (24.1MB/s)(2760MiB/120002msec)
-clat (usec): min=162, max=32017k, avg=5422.98, stdev=368937.59
-90.00th=[  725], 95.00th=[  971], 99.00th=[ 1991], 99.50th=[ 4047], 99.90th=[ 6980], 99.95th=[ 8586], 99.99th=[17112761]
-bw ( KiB/s): min=766, max=328303, avg=200846.78, stdev=106795.52, samples=27
-iops       : min=  5, max=  2564, avg=  1568.78, stdev=834.43
+IOPS=196, BW=24.6MiB/s (25.8MB/s)(3312MiB/134533msec)
+clat (usec): min=127, max=31823k, avg=5066.25, stdev=376354.71
+90.00th=[     635], 95.00th=[     799], 99.00th=[    1172], 99.50th=[    1418], 99.90th=[    3359], 99.95th=[    4359], 99.99th=[17112761]
+bw (  KiB/s): min=51353, max=419257, per=100.00%, avg=260514.46, stdev=97607.60, samples=26
+iops        : min=  401, max= 3275, avg=2034.88, stdev=762.57, samples=26
+cpu          : usr=0.51%, sys=3.62%, ctx=28047, majf=0, minf=53
 ```
 
 ### random read
 ```bash
-IOPS=5600, BW=21.9MiB/s (22.9MB/s)(2625MiB/120002msec)
-clat (usec): min=95, max=457521, avg=669.40, stdev=1131.07
-90.00th=[  857], 95.00th=[  971], 99.00th=[ 1319], 99.50th=[ 1663], 99.90th=[ 4686], 99.95th=[ 5604], 99.99th=[ 17957]
-bw ( KiB/s): min=11891, max=24104, avg=22456.69, stdev=296.43, samples=956
-iops       : min= 2971, max= 6026, avg=5613.38, stdev=74.12
+IOPS=5434, BW=21.2MiB/s (22.3MB/s)(2048MiB/96473msec)
+clat (usec): min=92, max=43205, avg=331.15, stdev=149.76
+90.00th=[  424], 95.00th=[  498], 99.00th=[  668], 99.50th=[  766], 99.90th=[ 1614], 99.95th=[ 3032], 99.99th=[ 3687]
+bw (  KiB/s): min=18181, max=26192, per=100.00%, avg=21770.51, stdev=425.29, samples=384
+iops        : min= 4545, max= 6548, avg=5442.52, stdev=106.36, samples=384
+cpu          : usr=8.99%, sys=30.46%, ctx=547085, majf=0, minf=41
 ```
+
+
+
+
 
