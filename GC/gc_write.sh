@@ -10,7 +10,7 @@ echo "[+] Unmounting previous mount (if any)..."
 umount $MOUNT_POINT 2>/dev/null || true
 
 echo "[+] Formatting $DEVICE as F2FS (5GB)..."
-mkfs.f2fs -f -s 16 $DEVICE
+mkfs.f2fs -f -s 1 $DEVICE
 
 echo "[+] Creating mount point and mounting..."
 mkdir -p $MOUNT_POINT
@@ -21,11 +21,6 @@ echo "[+] Syncing and dropping caches..."
 sync
 echo 3 > /proc/sys/vm/drop_caches
 
-echo "[+] Adjust GC sleep time..."
-echo 100 > /sys/fs/f2fs/vdb/gc_min_sleep_time 
-echo 150 > /sys/fs/f2fs/vdb/gc_max_sleep_time 
-echo 50 > /sys/fs/f2fs/vdb/gc_idle_interval
-
 echo "[+] Starting trace_pipe to log GC events..."
 # 启动 trace_pipe 到后台，并保存 PID
 cat /sys/kernel/debug/tracing/trace_pipe > $TRACE_LOG &
@@ -35,7 +30,7 @@ sleep 1
 echo "[+] Starting sequential write test..."
 fio --name=seq_write \
     --filename=$FILE \
-    --size=2G \
+    --size=3G \
     --rw=write \
     --bs=128K \
     --ioengine=sync \
@@ -45,15 +40,19 @@ fio --name=seq_write \
     --group_reporting
 
 echo "[+] Starting random update test..."
-fio --name=rand_update \
-    --filename=$FILE \
-    --size=1G \
-    --rw=randwrite \
-    --bs=8K \
-    --ioengine=sync \
-    --numjobs=1 \
-    --direct=1 \
-    --group_reporting
+for i in {1..10}; do
+  echo "[+] Overwriting round $i"
+  fio --name=overwrite_test \
+      --filename=$FILE \
+      --size=1G \
+      --rw=randwrite \
+      --bs=8K \
+      --ioengine=sync \
+      --direct=1 \
+      --numjobs=1 \
+      --runtime=30 \
+      --group_reporting
+done
 
 echo "[+] Stopping trace_pipe logging..."
 kill $TRACE_PID
