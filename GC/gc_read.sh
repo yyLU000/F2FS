@@ -35,4 +35,7 @@ fio --name=read_test \
     --runtime=60 \
     --group_reporting
 
+echo "[+] Count Read I/O..."
+cat /sys/block/vdb/stat
+
 echo "[+] DONE!"
