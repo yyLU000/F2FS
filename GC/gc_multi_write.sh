@@ -8,7 +8,7 @@ NUM_FILES=4
 FILE_SIZE="1G"
 TOTAL_SIZE="4G"
 RUNTIME=15
-FRAGMENT_ROUNDS=15
+FRAGMENT_ROUNDS=10
 
 TRACE_LOG="/tmp/gc_log.txt"
 
@@ -55,6 +55,28 @@ fio --name=multi_seq_write \
 echo "[+] File count: $NUM_FILES"
 echo "[+] Individual file size: $FILE_SIZE"
 echo "[+] Total data size: $TOTAL_SIZE"
+
+for round in $(seq 1 $FRAGMENT_ROUNDS); do
+    echo "[+] Fragmentation round $round/$FRAGMENT_ROUNDS"
+    fio --name=fragment_creation \
+        --directory="$MOUNT_POINT" \
+        --nrfiles=1 \
+        --filename_format='testfile_$jobnum' \
+        --filesize=256M \
+        --rw=randwrite \
+        --bs=4K \
+        --ioengine=libaio \
+        --iodepth=16 \
+        --numjobs="$NUM_FILES" \
+        --runtime=15 \
+        --direct=1 \
+        --group_reporting \
+        --thread \
+        --time_based \
+        --percentage_random=80 \
+        --norandommap
+done
+echo "[+] Fragmentation process completed!"
 
 # 显示文件信息
 echo "[+] File listing:"
