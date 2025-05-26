@@ -7,7 +7,7 @@ FILE="$MOUNT_POINT/test1"
 NUM_FILES=4
 FILE_SIZE="1G"
 TOTAL_SIZE="4G"
-RUNTIME=60
+RUNTIME=15
 FRAGMENT_ROUNDS=15
 
 TRACE_LOG="/tmp/gc_log.txt"
@@ -39,13 +39,13 @@ echo "[+] Creating $NUM_FILES files with ${FILE_SIZE} each (Total: ${TOTAL_SIZE}
 # 多文件异步顺序写入
 fio --name=multi_seq_write \
     --directory="$MOUNT_POINT" \
-    --nrfiles="$NUM_FILES" \
+    --nrfiles=1 \
     --filesize="$FILE_SIZE" \
-    --filename_format='testfile_$jobnum.$filenum' \
+    --filename_format='testfile_$jobnum' \
     --rw=write \
     --bs=128K \
-    --ioengine=libaio \
-    --iodepth=16 \
+    --ioengine=psync \
+    --iodepth=1 \
     --numjobs="$NUM_FILES" \
     --direct=1 \
     --group_reporting \
