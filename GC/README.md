@@ -1,6 +1,6 @@
 # GC Directory Structure
 
-This directory contains the core garbage collection implementation for F2FS, an experimental defragmentation-aware GC path, several workload scripts for triggering and evaluating GC behavior, and one baseline result note. The current folder includes `f2fs.h`, `gc.c`, `gc.h`, `gc_defrag.c`, `gc_defrag.h`, `gc_multi_read.sh`, `gc_multi_write.sh`, `gc_original.md`, `gc_rand_write.sh`, `gc_read.sh`, `gc_write.sh`, and `structure.md`.
+This directory contains the core garbage collection implementation for F2FS, an experimental defragmentation-aware GC path, several workload scripts for triggering and evaluating GC behavior, and one baseline result note. The current folder includes `f2fs.h`, `gc.c`, `gc.h`, `gc_defrag.c`, `gc_defrag.h`, `gc_multi_read.sh`, `gc_multi_write.sh`, `gc_original.md`, `gc_rand_write.sh`, `gc_read.sh`, `gc_write.sh`, and `README.md`.
 
 ## 1. Core source files
 
