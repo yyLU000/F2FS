@@ -2,10 +2,35 @@
  * F2FS GC Optimization Based on NZF2FS Approach
  * For Linux Kernel 5.15.99
  * 
- * This implementation focuses on three main optimization directions:
- * 1. Zone classification by data lifetime (Transfer/Hot/Warm/GC_Hot/GC_Warm/Cold)
- * 2. Improved GC benefit calculation for periodic garbage collection
- * 3. Invalid block fragmentation reduction and migration cost optimization
+ * This implementation introduces a fragmentation-aware and zone-based
+ * optimization framework for F2FS garbage collection (GC), aiming to
+ * improve system performance, reduce write amplification, and mitigate
+ * long-term fragmentation.
+ *
+ * The design focuses on three key aspects:
+ *
+ * 1. Zone-based Data Classification:
+ *    Data blocks are categorized into multiple zones (TRANSFER, HOT,
+ *    WARM, GC_HOT, GC_WARM, COLD) based on access frequency and recency.
+ *    This separation improves data locality and prevents hot/cold data
+ *    from being mixed within the same segments.
+ *
+ * 2. Fragmentation-aware Victim Selection:
+ *    The traditional cost-benefit (CB) model is extended by incorporating
+ *    fragmentation level as an additional factor. The GC benefit is
+ *    computed based on invalid block ratio, segment age, and fragmentation
+ *    degree, allowing the system to prioritize highly fragmented segments
+ *    for reclamation.
+ *
+ * 3. Migration-aware Block Placement:
+ *    During GC, valid blocks are not simply relocated but are reassigned
+ *    to appropriate zones according to their access patterns. This
+ *    reorganization improves spatial locality and reduces future
+ *    fragmentation.
+ *
+ * Overall, this approach transforms GC from a passive space reclamation
+ * mechanism into an active data layout optimization process, enhancing
+ * both read/write performance and SSD endurance.
  */
 
 /* 
