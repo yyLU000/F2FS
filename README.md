@@ -6,7 +6,7 @@ This project implements a **fragmentation-aware garbage collection (GC) optimiza
 
 ## Background
 
-F2FS is a flash-optimized file system designed based on the Log-Structured File System (LFS) principle, where all writes are performed sequentially to improve performance on NAND flash storage. :contentReference[oaicite:0]{index=0}
+F2FS is a flash-optimized file system designed based on the Log-Structured File System (LFS) principle, where all writes are performed sequentially to improve performance on NAND flash storage.
 
 However, despite its advantages, F2FS still suffers from several critical issues in real-world workloads:
 
