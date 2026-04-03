@@ -1,23 +1,23 @@
-# 🚀 F2FS Garbage Collection Optimization (FDGC)
+# F2FS Garbage Collection Optimization (FDGC)
 
 This project implements a **fragmentation-aware garbage collection (GC) optimization framework** for the Flash-Friendly File System (F2FS), aiming to improve system performance, reduce write amplification, and enhance SSD endurance.
 
 ---
 
-## 📌 Background
+## Background
 
 F2FS is a flash-optimized file system designed based on the Log-Structured File System (LFS) principle, where all writes are performed sequentially to improve performance on NAND flash storage. :contentReference[oaicite:0]{index=0}
 
 However, despite its advantages, F2FS still suffers from several critical issues in real-world workloads:
 
-- ❗ Inefficient garbage collection (GC) causing I/O jitter and latency spikes  
-- ❗ Severe **file fragmentation** and **space fragmentation** over time  
-- ❗ Hot and cold data mixing leading to poor locality  
-- ❗ Increased write amplification and energy consumption  
+- Inefficient garbage collection (GC) causing I/O jitter and latency spikes  
+- Severe **file fragmentation** and **space fragmentation** over time  
+- Hot and cold data mixing leading to poor locality  
+- Increased write amplification and energy consumption  
 
 ---
 
-## 🎯 Objective
+## Objective
 
 This project proposes **FDGC (Fragmentation-aware Defragmentation Garbage Collection)** to:
 
@@ -28,7 +28,7 @@ This project proposes **FDGC (Fragmentation-aware Defragmentation Garbage Collec
 
 ---
 
-## 💡 Key Contributions
+## Key Contributions
 
 ### 1. Fragmentation-aware Victim Selection (MCB)
 
@@ -50,7 +50,7 @@ During GC:
 - Sorted by **file offset**
 - Rewritten sequentially into new segments
 
-📌 Effect:
+Effect:
 - Restores file-level spatial locality
 - Improves sequential read performance
 - Reduces future fragmentation
@@ -67,13 +67,13 @@ Dynamically adjusts write behavior based on fragmentation level:
 | Medium             | Hybrid (append + in-place) |
 | High               | Force in-place update |
 
-📌 Effect:
+Effect:
 - Prevents further fragmentation
 - Stabilizes performance under heavy load
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 ```mermaid
 flowchart TD
@@ -89,7 +89,7 @@ flowchart TD
 
 ---
 
-## ⚙️ Implementation Details
+## Implementation Details
 
 ### Modified Components
 
@@ -114,11 +114,11 @@ flowchart TD
 
 ---
 
-## 🧪 Evaluation
+## Evaluation
 
 Experiments were conducted under multiple workloads (sequential, random, mixed):
 
-### 🔹 Key Results
+### Key Results
 
 | Metric | Improvement |
 |------|------------|
@@ -127,12 +127,12 @@ Experiments were conducted under multiple workloads (sequential, random, mixed):
 | Sequential read performance | ↑ 38% ~ 57% |
 | Average latency | ↓ 3% ~ 24% |
 
-📌 Note:
+Note:
 - Minor overhead (0.2% ~ 1.3%) observed in random workloads due to extra computation
 
 ---
 
-## 🧪 Workload Design
+## Workload Design
 
 - Sequential write + random overwrite
 - Multi-threaded concurrent writes
@@ -144,7 +144,7 @@ Tools used:
 
 ---
 
-## 🚧 Limitations
+## Limitations
 
 - Additional CPU overhead during GC
 - Requires kernel-level modification
@@ -152,7 +152,7 @@ Tools used:
 
 ---
 
-## 📂 Repository Structure
+## Repository Structure
 
 ```text
 F2FS/
@@ -166,7 +166,7 @@ F2FS/
 
 ---
 
-## 🔮 Future Work
+## Future Work
 
 - ML-based adaptive GC policy
 - More accurate fragmentation metrics
@@ -175,7 +175,7 @@ F2FS/
 
 ---
 
-## 📖 References
+## References
 
 [1] Lee C, Sim D, Hwang J Y, et al. F2FS: A New File System for Flash Storage[C]. 
     In: Proceedings of the 13th USENIX Conference on File and Storage Technologies (FAST 2015), 
